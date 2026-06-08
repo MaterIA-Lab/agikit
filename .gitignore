@@ -10,3 +10,6 @@ wheels/
 .venv
 .agents
 skills-lock.json
+
+# Custom directories for testing
+lab/
