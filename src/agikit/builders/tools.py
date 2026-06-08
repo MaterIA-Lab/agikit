@@ -11,7 +11,7 @@ DEFAULT_TOOL_MANIFEST_DESCRIPTION = (
 
 PLUGIN_TEMPLATE = '''from typing import Callable
 
-from agikit.types.tools import tool
+from agikit.types.tools import PackageMetadata, tool
 
 # ============================================================
 # Tool Definition
@@ -30,6 +30,14 @@ from agikit.types.tools import tool
 #     for the AI agents to understand when and how to use the tool.
 #
 # ============================================================
+
+PACKAGE_UI_METADATA: PackageMetadata = {
+    "display_name": "Test MCP",
+    "categories": ["console"],
+    "description": "A test MCP package for validating MCP integration and functionality.",
+    "uses_icon": False,
+    "icon_url": None,
+}
 
 
 @tool(

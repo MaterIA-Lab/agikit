@@ -3,6 +3,14 @@ from typing import TypedDict
 from typing import Optional
 
 
+class PackageMetadata(TypedDict):
+    display_name: str
+    categories: list[str]
+    description: str
+    uses_icon: bool = False
+    icon_url: Optional[str]
+
+
 class ToolMetadata(TypedDict):
     name: str
     display_name: str
