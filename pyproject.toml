@@ -20,3 +20,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agikit"]
+
+[tool.uv.workspace]
+members = [
+    "test-agent/tools/test-tool",
+    "test-agent/tools/exa-mcp",
+]

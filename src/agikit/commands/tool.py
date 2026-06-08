@@ -22,7 +22,7 @@ def run_tool_init_command(console: Console, tool_name: str) -> int:
     print_section_header(console, "agikit tool init", "Creating a new tool package")
     print_step(console, "Project root", str(project_root))
     print_step(console, "Selected tool", tool_name)
-    print_step(console, "Package manager", "uv init --package")
+    print_step(console, "Package manager", "uv init")
 
     try:
         target_dir = initialize_tool_package(project_root=project_root, tool_name=tool_name)
@@ -36,7 +36,7 @@ def run_tool_init_command(console: Console, tool_name: str) -> int:
             "Tool Ready",
             [
                 f"[green]OK[/] Tool created at [bold]{target_dir}[/]",
-                "Consider adding agikit as a dependency if the tool needs shared project helpers.",
+                "Created plugin.py and manifest.json with a ready-to-edit starter tool.",
             ],
             console=console,
         )

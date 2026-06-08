@@ -86,7 +86,7 @@ From inside an agikit project:
 agikit tool init my-tool
 ```
 
-This uses `uv init --package` inside `tools/` to create a Python package for the tool.
+This uses `uv init` inside `tools/`, replaces `main.py` with `plugin.py`, and creates a `manifest.json` starter next to it.
 
 ## Build
 
