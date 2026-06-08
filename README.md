@@ -94,4 +94,17 @@ This uses `uv init` inside `tools/`, replaces `main.py` with `plugin.py`, and cr
 agikit build
 ```
 
-The command exists already, but `.agi` archive generation is still pending implementation.
+This creates:
+
+```text
+dist/
+└── <project-name>.agi
+```
+
+The `.agi` file is a zip archive that includes:
+
+- `mcps/`
+- `skills/`
+- `tools/`
+- `agent.yaml`
+- `prompt.md`
