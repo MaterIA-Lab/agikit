@@ -24,6 +24,12 @@ Create a new agent template:
 agikit init my-agent
 ```
 
+By default, new projects start as `fastagent`. You can switch later with:
+
+```bash
+agikit agent type multiskilled
+```
+
 This creates:
 
 ```text

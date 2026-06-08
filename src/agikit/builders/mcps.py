@@ -1,5 +1,6 @@
 from pathlib import Path
 
+DEFAULT_MCP_UI_DESCRIPTION = "Add a brief description of your package here."
 
 DEFAULT_MCP = """{{
   "mcpServers": {{
@@ -14,7 +15,7 @@ DEFAULT_MCP = """{{
       "categories": [
         "your-category"
       ],
-      "description": "Add a brief description of your package here.",
+      "description": "{default_description}",
       "uses_icon": false,
       "icon_url": ""
     }}
@@ -40,7 +41,21 @@ def initialize_mcp(root: Path, mcp_name: str) -> tuple[Path, Path]:
     mcp_dir.mkdir(parents=True, exist_ok=False)
     mcp_file = mcp_dir / f"{mcp_name}.json"
     mcp_file.write_text(
-        DEFAULT_MCP.format(server_name=mcp_name, display_name=mcp_name),
+        DEFAULT_MCP.format(
+            server_name=mcp_name,
+            display_name=mcp_name,
+            default_description=DEFAULT_MCP_UI_DESCRIPTION,
+        ),
         encoding="utf-8",
     )
     return mcp_dir, mcp_file
+
+
+def remove_mcp(root: Path, mcp_name: str) -> Path:
+    mcp_dir = root / "mcps" / mcp_name
+    if not mcp_dir.exists():
+        raise FileNotFoundError(f"MCP '{mcp_name}' does not exist.")
+    import shutil
+
+    shutil.rmtree(mcp_dir)
+    return mcp_dir

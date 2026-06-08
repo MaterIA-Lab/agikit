@@ -4,9 +4,10 @@ from pathlib import Path
 
 from rich.console import Console
 from agikit.ui import build_summary_panel, print_divider, print_error, print_section_header, print_step, print_success
+from agikit.checks import collect_project_warnings
 
 
-def run_build_command(console: Console) -> int:
+def run_build_command(console: Console, no_check: bool = False) -> int:
     project_root = Path.cwd()
     marker = project_root / ".agikit" / "project.json"
     if not marker.exists():
@@ -41,6 +42,22 @@ def run_build_command(console: Console) -> int:
     print_step(console, "Project name", project_name)
     print_step(console, "Output archive", str(archive_path))
     print_step(console, "Packaging", "mcps/, skills/, tools/, agent.yaml, prompt.md")
+    if no_check:
+        print_step(console, "Pre-build check", "skipped with --no-check")
+    else:
+        print_step(console, "Pre-build check", "running agikit check")
+        warnings = collect_project_warnings(project_root)
+        if warnings:
+            print_divider(console)
+            console.print(
+                build_summary_panel(
+                    "Build Blocked",
+                    [(f"warning {index}", warning) for index, warning in enumerate(warnings, start=1)],
+                    console=console,
+                )
+            )
+            print_error(console, "build stopped because agikit check found warnings. Use --no-check to bypass.")
+            return 1
 
     _build_archive(project_root=project_root, archive_path=archive_path)
 

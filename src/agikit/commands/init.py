@@ -6,7 +6,7 @@ from agikit.builders import scaffold_agent_project
 from agikit.ui import build_note_panel, build_summary_panel, print_command_header, print_divider, print_error, print_info, print_step, print_success
 
 
-def run_init_command(console: Console, agent_name: str, agent_type: str = "multiskilled") -> int:
+def run_init_command(console: Console, agent_name: str, agent_type: str = "fastagent") -> int:
     destination = Path.cwd() / agent_name
     if destination.exists():
         print_error(console, f"'{agent_name}' already exists.")

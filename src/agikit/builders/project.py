@@ -20,7 +20,7 @@ class ScaffoldResult:
     marker_file: Path
 
 
-def scaffold_agent_project(destination: Path, agent_name: str, agent_type: str = "multiskilled") -> ScaffoldResult:
+def scaffold_agent_project(destination: Path, agent_name: str, agent_type: str = "fastagent") -> ScaffoldResult:
     destination.mkdir(parents=True, exist_ok=False)
 
     prompt_file = build_prompt_file(destination)

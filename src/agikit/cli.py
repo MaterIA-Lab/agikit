@@ -5,11 +5,15 @@ from collections.abc import Sequence
 from rich.console import Console
 
 from agikit.commands import (
+    run_agent_type_command,
     run_build_command,
+    run_check_command,
     run_init_command,
     run_mcp_init_command,
+    run_mcp_remove_command,
     run_skill_init_command,
     run_tool_init_command,
+    run_tool_remove_command,
 )
 
 
@@ -25,16 +29,23 @@ def _build_parser() -> argparse.ArgumentParser:
     init_parser.add_argument(
         "--type",
         dest="agent_type",
-        default="multiskilled",
+        default="fastagent",
         choices=("multiskilled", "fastagent"),
         help="Agent type written to agent.yaml.",
     )
+
+    agent_parser = subparsers.add_parser("agent", help="Manage agent metadata inside an agikit project.")
+    agent_subparsers = agent_parser.add_subparsers(dest="agent_command")
+    agent_type_parser = agent_subparsers.add_parser("type", help="Change the agent type and rewrite content.")
+    agent_type_parser.add_argument("agent_type", choices=("multiskilled", "fastagent"))
 
     tool_parser = subparsers.add_parser("tool", help="Manage tool packages inside an agikit project.")
     tool_subparsers = tool_parser.add_subparsers(dest="tool_command")
 
     tool_init_parser = tool_subparsers.add_parser("init", help="Create a new tool package with uv.")
     tool_init_parser.add_argument("name", help="Tool package name.")
+    tool_remove_parser = tool_subparsers.add_parser("remove", help="Remove a tool package and its agent reference.")
+    tool_remove_parser.add_argument("name", help="Tool package name.")
 
     skill_parser = subparsers.add_parser("skill", help="Manage skills inside an agikit project.")
     skill_subparsers = skill_parser.add_subparsers(dest="skill_command")
@@ -47,8 +58,12 @@ def _build_parser() -> argparse.ArgumentParser:
 
     mcp_init_parser = mcp_subparsers.add_parser("init", help="Create a new MCP folder and JSON file.")
     mcp_init_parser.add_argument("name", help="MCP folder name.")
+    mcp_remove_parser = mcp_subparsers.add_parser("remove", help="Remove an MCP package and its agent reference.")
+    mcp_remove_parser.add_argument("name", help="MCP folder name.")
 
-    subparsers.add_parser("build", help="Build the current template into a .agi archive.")
+    build_parser = subparsers.add_parser("build", help="Build the current template into a .agi archive.")
+    build_parser.add_argument("--no-check", action="store_true", help="Skip agikit check before packaging.")
+    subparsers.add_parser("check", help="Review the project for default placeholders and incomplete metadata.")
     return parser
 
 
@@ -63,14 +78,22 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.command == "init":
         return run_init_command(console=console, agent_name=args.name, agent_type=args.agent_type)
+    if args.command == "agent" and args.agent_command == "type":
+        return run_agent_type_command(console=console, agent_type=args.agent_type)
     if args.command == "tool" and args.tool_command == "init":
         return run_tool_init_command(console=console, tool_name=args.name)
+    if args.command == "tool" and args.tool_command == "remove":
+        return run_tool_remove_command(console=console, tool_name=args.name)
     if args.command == "skill" and args.skill_command == "init":
         return run_skill_init_command(console=console, skill_name=args.name)
     if args.command == "mcp" and args.mcp_command == "init":
         return run_mcp_init_command(console=console, mcp_name=args.name)
+    if args.command == "mcp" and args.mcp_command == "remove":
+        return run_mcp_remove_command(console=console, mcp_name=args.name)
+    if args.command == "check":
+        return run_check_command(console=console)
     if args.command == "build":
-        return run_build_command(console=console)
+        return run_build_command(console=console, no_check=args.no_check)
 
     parser.print_help()
     return 0

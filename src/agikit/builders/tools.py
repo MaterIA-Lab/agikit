@@ -3,6 +3,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
+DEFAULT_TOOL_MANIFEST_DESCRIPTION = (
+    "Use this package when the agent needs project-specific tools, "
+    "reusable actions, or integrations that are not covered by the core runtime."
+)
+
 
 PLUGIN_TEMPLATE = '''from typing import Callable
 
@@ -93,6 +98,14 @@ def initialize_tool_package(project_root: Path, tool_name: str) -> Path:
     return target_dir
 
 
+def remove_tool_package(project_root: Path, tool_name: str) -> Path:
+    target_dir = project_root / "tools" / tool_name
+    if not target_dir.exists():
+        raise FileNotFoundError(f"Tool '{tool_name}' does not exist.")
+    shutil.rmtree(target_dir)
+    return target_dir
+
+
 def _replace_main_with_plugin(target_dir: Path) -> None:
     main_file = target_dir / "main.py"
     if main_file.exists():
@@ -112,10 +125,7 @@ def _write_manifest(target_dir: Path, tool_name: str) -> None:
     manifest = {
         "name": tool_name,
         "version": "1.0.0",
-        "description": (
-            "Use this package when the agent needs project-specific tools, "
-            "reusable actions, or integrations that are not covered by the core runtime."
-        ),
+        "description": DEFAULT_TOOL_MANIFEST_DESCRIPTION,
         "additional_installation": False,
         "installer_path": None,
     }
